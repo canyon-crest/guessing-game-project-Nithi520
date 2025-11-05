@@ -7,6 +7,11 @@
   <body>
     <p id="date"></p>
 
+    <h2>Welcome to the Guesser Game</h2>
+    <h3>Enter Your Name: </h3>
+    <input type="text" id="player">
+    <button id="startBtn">Start</button>
+
     <h3>Level</h3>
     <input type="radio" name="level" id="e" value="3" checked><label for="e">Easy</label>
     <input type="radio" name="level" id="m" value="10"><label for="m">Medium</label>
@@ -18,10 +23,13 @@
     <input type="text" id="guess">
     <button id="guessBtn" disabled>Guess</button>
     <button id="giveUp" disabled>Give Up</button>
+    <p id="timer">Timer:</p>
 
     <h3>Stats</h3>
     <p id="wins">Total wins: 0</p>
     <p id="avgScore">Average Score: </p>
+    <p id="fastgame"> Fastest Game Played:</p>
+    <p id="avgTime">Average Time Per Game: </p>
 
     <h3>Leaderboard</h3>
     <ol>
