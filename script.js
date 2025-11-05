@@ -1,8 +1,3 @@
-//global variables
-
-const { startTransition } = require("react");
-
-// add a stop watch to see how long a round took, and look in book for guidelines
 let level, answer, score, playerName;
 const levelArr = document.getElementsByName("level");
 const scoreArr = [];
@@ -21,8 +16,9 @@ const date = document.getElementById("date");
 const playerInput = document.getElementById("player");
 const startBtn = document.getElementById("startBtn");
 const timerdisplay = document.getElementById("timer");
+const fastgame = document.getElementById("fastgame");
+const avgTime = document.getElementById("avgTime");
 
-//Name capatlization proper and save to a variable 
 
 function formatName(name){
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -47,13 +43,13 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-//add event listeners
+
 playBtn.addEventListener("click",play);
 guessBtn.addEventListener("click", makeGuess);
 giveUpBtn.addEventListener("click", giveUp);
 
 function play(){
-    score = 0; // sets score to zero very new game 
+    score = 0;  
     playBtn.disabled = true; 
     guessBtn.disabled = false; 
     guess.disabled = false;
@@ -65,24 +61,22 @@ function play(){
        
        levelArr[i].disabled = true;
     }
-
- msg.textContent =  playerName + " guess a number from 1-" + level; 
- answer = Math.floor(Math.random()*level)+1; 
- guess.placeholder = "Enter your guess here";
- guess.value ="";
-
 }
+msg.textContent =  playerName + " guess a number from 1-" + level; 
+answer = Math.floor(Math.random()*level)+1; 
+guess.placeholder = "Enter your guess here";
+guess.value ="";
 
 startTime = new Date()
- clearInterval(timerInterval)
- timerInterval = setInterval(updateTimeDisplay, 1000)
+clearInterval(timerInterval)
+timerInterval = setInterval(updateTimeDisplay, 1000)
 }
 
 
-function visibleTimer(){
-    let now = new Date()
-    let second = Math.celi((now-startTime)/1000)
-    timerdisplay.textContent = second + "s"
+function updateTimeDisplay(){
+    const now = new Date()
+    const second = Math.floor((now - startTime) / 1000)
+    timerdisplay.textContent = "Timer: " + second + "s"
 }
 
 function makeGuess(){
@@ -91,17 +85,18 @@ function makeGuess(){
         msg.textContent = playerName + "Enter a VALID number between 1-" + level; 
         return;
     }
-    score++; //valid guess add 1 to score
+    score++;
     
 
     if (userGuess == answer){
-        let message = scoreEval() 
-        msg.textContent = playerName + " you got it! It took you " + score +" tries. "+ message + " Press play to play again";
-       
         endTime = new Date();
         elapsedTime = Math.floor((endTime - startTime) / 1000);
         timeArr.push(elapsedTime);
-        
+        clearInterval(timerInterval);
+
+        let message = scoreEval() 
+        msg.textContent = playerName + " you got it! It took you " + score +" tries and "+ elapsedTime+ "s. "+ message + " Press play to play again";
+       
         updateScore();
         reset();
     }
@@ -132,6 +127,7 @@ function scoreEval(){
 }
 
 function giveUp(){
+    clearInterval(timerInterval);
     score = parseInt(level)
     msg.textContent = playerName + " you gave up! The answer was " + answer + ". Press Play to try again."
     updateScore();
@@ -144,6 +140,8 @@ function reset(){
     guess.disabled = true; 
     giveUpBtn.disabled = true;
     playBtn.disabled = false; 
+    clearInterval(timerInterval);
+    timerdisplay.textContent = "Timer:0s"
     for(let i=0; i<levelArr.length; i++){
         levelArr[i].disabled = false;
     }
@@ -164,6 +162,13 @@ function updateScore(){
     }
     let avg = sum/scoreArr.length;
     avgScore.textContent = "Average Score:" +avg.toFixed(2);
+
+    timeArr.sort((a,b)=>a - b);
+    fastgame.textContent = "Fastest time: "+ timeArr[0]+ "s"
+
+    const Tsum = timeArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let Tavg = Tsum/timeArr.length;
+    avgTime.textContent = "Average Time per Game: " + Tavg.toFixed(2) + "s."
 }
 
 
