@@ -3,6 +3,7 @@ const levelArr = document.getElementsByName("level");
 const scoreArr = [];
 
 let startTime, endTime, elapsedTime, timerInterval;
+let countdown, timeLimit = 0;
 const timeArr = [];
 
 const playBtn = document.getElementById("playBtn");
@@ -19,6 +20,9 @@ const timerdisplay = document.getElementById("timer");
 const fastgame = document.getElementById("fastgame");
 const avgTime = document.getElementById("avgTime");
 
+playBtn.disabled = true
+
+
 
 function formatName(name){
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -31,8 +35,10 @@ startBtn.addEventListener("click", function() {
     return;
   }
 
+  else{
   playerName = formatName(rawName); 
   msg.textContent = "Welcome " +playerName+ " Choose a level and press Play" 
+  playBtn.disabled = false }
 })
 
 date.textContent = time();
@@ -70,13 +76,38 @@ guess.value ="";
 startTime = new Date()
 clearInterval(timerInterval)
 timerInterval = setInterval(updateTimeDisplay, 1000)
+
+if(level==100){
+    timeLimit = 30;
+    clearInterval(countdown);
+    countdown = setInterval(()=>{
+        timeLimit--;
+        updateTimeDisplay();
+
+        if (timeLimit <=0){
+            clearInterval(timerInterval);
+            clearInterval(countdown);
+            msg.textContent = playerName + ", time's up! The answer was " + answer + ". Try again!";
+            reset();
+        }
+    }, 1000);
+} else{
+    clearInterval(countdown);
+    timeLimit = 0
+}
+
 }
 
 
 function updateTimeDisplay(){
     const now = new Date()
     const second = Math.floor((now - startTime) / 1000)
-    timerdisplay.textContent = "Timer: " + second + "s"
+    if (level==100 && timeLimit>0){
+        timerdisplay.textContent = "Timer: " + second + "s" + " |  " + "Time Left: " + timeLimit + "s."
+    }
+    else {
+        timerdisplay.textContent = "Timer: " + second + "s"
+    }
 }
 
 function makeGuess(){
@@ -141,6 +172,7 @@ function reset(){
     giveUpBtn.disabled = true;
     playBtn.disabled = false; 
     clearInterval(timerInterval);
+    clearInterval(countdown);
     timerdisplay.textContent = "Timer:0s"
     for(let i=0; i<levelArr.length; i++){
         levelArr[i].disabled = false;
