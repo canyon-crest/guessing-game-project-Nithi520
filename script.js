@@ -184,7 +184,7 @@ function updateScore(){
     scoreArr.push(score);
     scoreArr.sort((a,b) => a - b);
     let lb = document.getElementsByName("leaderboard")
-    wins.textContent = "Total wins:" + scoreArr.length;
+    wins.textContent = "Total wins: " + scoreArr.length;
     let sum = 0;
     for(let i=0; i<scoreArr.length; i++){
         sum += scoreArr[i];
@@ -193,7 +193,7 @@ function updateScore(){
         }
     }
     let avg = sum/scoreArr.length;
-    avgScore.textContent = "Average Score:" +avg.toFixed(2);
+    avgScore.textContent = "Average Score: " +avg.toFixed(2);
 
     timeArr.sort((a,b)=>a - b);
     fastgame.textContent = "Fastest time: "+ timeArr[0]+ "s"
